@@ -1,0 +1,1 @@
+# artigo-aws-rekognition-comparar-faces
