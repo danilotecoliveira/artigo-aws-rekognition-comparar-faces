@@ -15,7 +15,7 @@ namespace AwsRekognitionFaceCompare.Api.Services
             _rekognitionClient = new AmazonRekognitionClient();
         }
 
-        public IEnumerable<FaceMatchResult> GetFaceMatches(string sourceImage, string targetImage)
+        public IEnumerable<FaceMatchResponse> GetFaceMatches(string sourceImage, string targetImage)
         {
             var similarityThreshold = 70f;
             sourceImage = "source.jpg";
@@ -35,7 +35,7 @@ namespace AwsRekognitionFaceCompare.Api.Services
             };
 
             var compareFacesResponse = _rekognitionClient.CompareFacesAsync(compareFacesRequest).Result;
-            var listFaces = new List<FaceMatchResult>();
+            var listFaces = new List<FaceMatchResponse>();
 
             foreach (var match in compareFacesResponse.FaceMatches)
             {
@@ -43,7 +43,7 @@ namespace AwsRekognitionFaceCompare.Api.Services
                 var position = face.BoundingBox;
 
                 listFaces.Add(
-                    new FaceMatchResult
+                    new FaceMatchResponse
                     {
                         PositionLeft = position.Left,
                         PositionHeight = position.Height,
@@ -70,6 +70,6 @@ namespace AwsRekognitionFaceCompare.Api.Services
 
     public interface ICompareFaces 
     {
-        IEnumerable<FaceMatchResult> GetFaceMatches(string sourceImage, string targetImage);
+        IEnumerable<FaceMatchResponse> GetFaceMatches(string sourceImage, string targetImage);
     }
 }

@@ -1,6 +1,6 @@
 namespace AwsRekognitionFaceCompare.Api.Entities
 {
-    public class FaceMatchResult
+    public class FaceMatchResponse
     {
         public float PositionLeft { get; set; }
         public float PositionHeight { get; set; }
