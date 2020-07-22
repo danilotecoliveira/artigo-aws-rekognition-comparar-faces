@@ -1,25 +1,29 @@
+using System;
 using System.IO;
+using System.Linq;
+using System.Drawing;
 using Amazon.Rekognition;
 using Amazon.Rekognition.Model;
 using System.Collections.Generic;
+using Microsoft.Extensions.Logging;
 using AwsRekognitionFaceCompare.Api.Entities;
 
 namespace AwsRekognitionFaceCompare.Api.Services
 {
     public class CompareFaces : ICompareFaces
     {
+        private readonly ILogger<CompareFaces> _logger;
         private readonly AmazonRekognitionClient _rekognitionClient;
 
-        public CompareFaces()
+        public CompareFaces(ILogger<CompareFaces> logger)
         {
+            _logger = logger;
             _rekognitionClient = new AmazonRekognitionClient();
         }
 
         public IEnumerable<FaceMatchResponse> GetFaceMatches(string sourceImage, string targetImage)
         {
-            var similarityThreshold = 70f;
-            sourceImage = "source.jpg";
-            targetImage = "target.jpg";
+            var similarityThreshold = 90f;
 
             var imageSource = new Amazon.Rekognition.Model.Image();
             imageSource.Bytes = ConvertImageToMemoryStream(sourceImage);
@@ -40,7 +44,7 @@ namespace AwsRekognitionFaceCompare.Api.Services
             foreach (var match in compareFacesResponse.FaceMatches)
             {
                 var face = match.Face;
-                var position = face.BoundingBox;
+                var position = compareFacesResponse.SourceImageFace.BoundingBox;
 
                 listFaces.Add(
                     new FaceMatchResponse
@@ -54,17 +58,31 @@ namespace AwsRekognitionFaceCompare.Api.Services
                 );
             }
 
+            Drawing(ConvertImageToMemoryStream(sourceImage), listFaces);
+
             return listFaces;
         }
 
-        public MemoryStream ConvertImageToMemoryStream(string pathImage)
+        public void Drawing(MemoryStream imageSource, List<FaceMatchResponse> listFaces)
         {
-            using (var fs = new FileStream(pathImage, FileMode.Open, FileAccess.Read))
-            {
-                var data = new byte[fs.Length];
-                fs.Read(data, 0, (int)fs.Length);
-                return new MemoryStream(data);
-            }
+            var image = System.Drawing.Image.FromStream(imageSource);
+            Graphics graph = Graphics.FromImage(image);
+            Pen pen = new Pen(Brushes.Red);
+            var face = listFaces.FirstOrDefault();
+
+            var left = face.PositionLeft * image.Width;
+            var top = face.PositionTop * image.Height;
+            var width = face.PositionWidth * image.Width;
+            var height = face.PositionHeight * image.Height;
+
+            graph.DrawRectangle(pen, left, top, width, height);    
+            image.Save("myImage.jpg", System.Drawing.Imaging.ImageFormat.Jpeg);
+        }
+
+        private MemoryStream ConvertImageToMemoryStream(string imageBase64)
+        {
+            var bytes = Convert.FromBase64String(imageBase64);
+            return new MemoryStream(bytes);
         }
     }
 
