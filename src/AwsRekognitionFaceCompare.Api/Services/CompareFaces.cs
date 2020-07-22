@@ -37,7 +37,7 @@ namespace AwsRekognitionFaceCompare.Api.Services
             var compareFacesResponse = _rekognitionClient.CompareFacesAsync(compareFacesRequest).Result;
             var listFaces = new List<FaceMatchResult>();
 
-            foreach (CompareFacesMatch match in compareFacesResponse.FaceMatches)
+            foreach (var match in compareFacesResponse.FaceMatches)
             {
                 var face = match.Face;
                 var position = face.BoundingBox;
