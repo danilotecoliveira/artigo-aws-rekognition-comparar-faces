@@ -8,34 +8,39 @@ namespace AwsRekognitionFaceCompare.Api.Services
 {
     public class CompareFaces : ICompareFaces
     {
-        public void Example()
+        private readonly AmazonRekognitionClient _rekognitionClient;
+
+        public CompareFaces()
         {
-            AmazonRekognitionClient rekognitionClient = new AmazonRekognitionClient();
+            _rekognitionClient = new AmazonRekognitionClient();
+        }
 
+        public IEnumerable<FaceMatchResult> GetFaceMatches(string sourceImage, string targetImage)
+        {
             var similarityThreshold = 70f;
-            var sourceImage = "source.jpg";
-            var targetImage = "target.jpg";
+            sourceImage = "source.jpg";
+            targetImage = "target.jpg";
 
-            Amazon.Rekognition.Model.Image imageSource = new Amazon.Rekognition.Model.Image();
+            var imageSource = new Amazon.Rekognition.Model.Image();
             imageSource.Bytes = ConvertImageToMemoryStream(sourceImage);
 
-            Amazon.Rekognition.Model.Image imageTarget = new Amazon.Rekognition.Model.Image();
+            var imageTarget = new Amazon.Rekognition.Model.Image();
             imageTarget.Bytes = ConvertImageToMemoryStream(targetImage);
 
-            CompareFacesRequest compareFacesRequest = new CompareFacesRequest
+            var compareFacesRequest = new CompareFacesRequest
             {
                 SourceImage = imageSource,
                 TargetImage = imageTarget,
                 SimilarityThreshold = similarityThreshold
             };
 
-            CompareFacesResponse compareFacesResponse = rekognitionClient.CompareFacesAsync(compareFacesRequest).Result;
-            List<FaceMatchResult> listFaces = new List<FaceMatchResult>();
+            var compareFacesResponse = _rekognitionClient.CompareFacesAsync(compareFacesRequest).Result;
+            var listFaces = new List<FaceMatchResult>();
 
             foreach (CompareFacesMatch match in compareFacesResponse.FaceMatches)
             {
-                ComparedFace face = match.Face;
-                BoundingBox position = face.BoundingBox;
+                var face = match.Face;
+                var position = face.BoundingBox;
 
                 listFaces.Add(
                     new FaceMatchResult
@@ -48,13 +53,15 @@ namespace AwsRekognitionFaceCompare.Api.Services
                     }
                 );
             }
+
+            return listFaces;
         }
 
         public MemoryStream ConvertImageToMemoryStream(string pathImage)
         {
-            using (FileStream fs = new FileStream(pathImage, FileMode.Open, FileAccess.Read))
+            using (var fs = new FileStream(pathImage, FileMode.Open, FileAccess.Read))
             {
-                byte[] data = new byte[fs.Length];
+                var data = new byte[fs.Length];
                 fs.Read(data, 0, (int)fs.Length);
                 return new MemoryStream(data);
             }
@@ -63,6 +70,6 @@ namespace AwsRekognitionFaceCompare.Api.Services
 
     public interface ICompareFaces 
     {
-        //
+        IEnumerable<FaceMatchResult> GetFaceMatches(string sourceImage, string targetImage);
     }
 }
