@@ -4,5 +4,9 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="AWSSDK.Rekognition" Version="3.3.106.13" />
+  </ItemGroup>
+
 
 </Project>
