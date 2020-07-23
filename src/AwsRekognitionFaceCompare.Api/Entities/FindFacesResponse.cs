@@ -2,11 +2,11 @@ namespace AwsRekognitionFaceCompare.Api.Entities
 {
     public class FindFacesResponse
     {
-        public FindFacesResponse(string drawnImageBase64)
+        public FindFacesResponse(string fileName)
         {
-            DrawnImageBase64 = drawnImageBase64;
+            DrawnImage = fileName;
         }
 
-        public string DrawnImageBase64 { get; private set; }
+        public string DrawnImage { get; private set; }
     }
 }

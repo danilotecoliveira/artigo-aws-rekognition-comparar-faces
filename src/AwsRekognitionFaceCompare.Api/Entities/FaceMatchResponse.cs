@@ -2,15 +2,15 @@ namespace AwsRekognitionFaceCompare.Api.Entities
 {
     public class FaceMatchResponse
     {
-        public FaceMatchResponse(bool match, float? similarity, string drawnImageBase64)
+        public FaceMatchResponse(bool match, float? similarity, string fileName)
         {
             Match = match;
             Similarity = similarity;
-            DrawnImageBase64 = drawnImageBase64;
+            DrawnImage = fileName;
         }
 
         public bool Match { get; private set; }
         public float? Similarity { get; private set; }
-        public string DrawnImageBase64 { get; private set; }
+        public string DrawnImage { get; private set; }
     }
 }

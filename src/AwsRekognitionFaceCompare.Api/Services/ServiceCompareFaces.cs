@@ -41,11 +41,10 @@ namespace AwsRekognitionFaceCompare.Api.Services
             }
 
             var convertImage = _serviceUtils.ConvertImageToMemoryStream(sourceImage);
-            var drawnImage = _serviceUtils.Drawing(convertImage, response.SourceImageFace);
-            var imageBase64 = _serviceUtils.ConvertImageToBase64(drawnImage);            
+            var fileName = _serviceUtils.Drawing(convertImage, response.SourceImageFace);
             var similarity = response.FaceMatches.FirstOrDefault().Similarity;
 
-            return new FaceMatchResponse(hasMatch, similarity, imageBase64);
+            return new FaceMatchResponse(hasMatch, similarity, fileName);
         }
     }
 

@@ -1,9 +1,12 @@
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Configuration;
 using AwsRekognitionFaceCompare.Api.Services;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
+using System.IO;
 
 namespace AwsRekognitionFaceCompare.Api
 {
@@ -18,10 +21,13 @@ namespace AwsRekognitionFaceCompare.Api
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDirectoryBrowser();
+
             services.AddControllers();
             services.AddTransient<IServiceUtils, ServiceUtils>();
             services.AddTransient<IServiceDetectFaces, ServiceDetectFaces>();
             services.AddTransient<IServiceCompareFaces, ServiceCompareFaces>();
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -30,6 +36,20 @@ namespace AwsRekognitionFaceCompare.Api
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(
+                    Path.Combine(Directory.GetCurrentDirectory(), "Images")),
+                RequestPath = "/images"
+            });
+            
+            app.UseDirectoryBrowser(new DirectoryBrowserOptions
+            {
+                FileProvider = new PhysicalFileProvider(
+                    Path.Combine(Directory.GetCurrentDirectory(), "Images")),
+                RequestPath = "/images"
+            });
 
             app.UseHttpsRedirection();
             app.UseRouting();

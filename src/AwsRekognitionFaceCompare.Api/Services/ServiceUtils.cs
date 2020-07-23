@@ -1,6 +1,8 @@
 using System;
 using System.IO;
 using System.Drawing;
+using System.Drawing.Imaging;
+using Microsoft.AspNetCore.Http;
 using System.Collections.Generic;
 using aws = Amazon.Rekognition.Model;
 
@@ -8,17 +10,14 @@ namespace AwsRekognitionFaceCompare.Api.Services
 {
     public class ServiceUtils : IServiceUtils
     {
-        public string ConvertImageToBase64(Image image)
+        private readonly IHttpContextAccessor _httpContextAccessor;
+
+        public ServiceUtils(IHttpContextAccessor httpContextAccessor)
         {
-            using (var memory = new MemoryStream())
-            {
-                image.Save(memory, image.RawFormat);
-                var imageBytes = memory.ToArray();
-                var base64String = Convert.ToBase64String(imageBytes);
-                
-                return base64String;
-            }
+            _httpContextAccessor = httpContextAccessor;
         }
+
+
 
         public MemoryStream ConvertImageToMemoryStream(string imageBase64)
         {
@@ -26,7 +25,7 @@ namespace AwsRekognitionFaceCompare.Api.Services
             return new MemoryStream(bytes);
         }
 
-        public Image Drawing(MemoryStream imageSource, aws.ComparedSourceImageFace faceMatch)
+        public string Drawing(MemoryStream imageSource, aws.ComparedSourceImageFace faceMatch)
         {
             var boxes = new List<aws.BoundingBox>();
             
@@ -42,7 +41,7 @@ namespace AwsRekognitionFaceCompare.Api.Services
             return Drawing(imageSource, boxes);
         }
 
-        public Image Drawing(MemoryStream imageSource, List<aws.FaceDetail> faceDetails)
+        public string Drawing(MemoryStream imageSource, List<aws.FaceDetail> faceDetails)
         {
             var boxes = new List<aws.BoundingBox>();
             
@@ -60,7 +59,7 @@ namespace AwsRekognitionFaceCompare.Api.Services
             return Drawing(imageSource, boxes);
         }
 
-        private Image Drawing(MemoryStream imageSource, List<aws.BoundingBox> boxes)
+        private string Drawing(MemoryStream imageSource, List<aws.BoundingBox> boxes)
         {
             var image = Image.FromStream(imageSource);
             var graphic = Graphics.FromImage(image);
@@ -76,15 +75,26 @@ namespace AwsRekognitionFaceCompare.Api.Services
                 );
             });
 
-            return image;
+            var fileName = $"{Guid.NewGuid()}.jpg";
+
+            image.Save($"Images/{fileName}", ImageFormat.Jpeg);
+
+            return GetUrlImage(fileName);
+        }
+
+        private string GetUrlImage(string fileName)
+        {
+            var request = _httpContextAccessor.HttpContext.Request;
+            var urlImage = $"{request.Scheme}://{request.Host.ToUriComponent()}/images/{fileName}";
+            
+            return urlImage;
         }
     }
 
     public interface IServiceUtils
     {
-        string ConvertImageToBase64(Image image);
         MemoryStream ConvertImageToMemoryStream(string imageBase64);
-        Image Drawing(MemoryStream imageSource, aws.ComparedSourceImageFace faceMatch);
-        Image Drawing(MemoryStream imageSource, List<aws.FaceDetail> faceDetails);
+        string Drawing(MemoryStream imageSource, aws.ComparedSourceImageFace faceMatch);
+        string Drawing(MemoryStream imageSource, List<aws.FaceDetail> faceDetails);
     }
 }

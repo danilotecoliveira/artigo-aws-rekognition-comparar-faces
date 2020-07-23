@@ -31,10 +31,9 @@ namespace AwsRekognitionFaceCompare.Api.Services
             var response = await _rekognitionClient.DetectFacesAsync(request);
 
             var convertImage = _serviceUtils.ConvertImageToMemoryStream(sourceImage);
-            var drawnImage = _serviceUtils.Drawing(convertImage, response.FaceDetails);
-            var imageBase64 = _serviceUtils.ConvertImageToBase64(drawnImage);
+            var fileName = _serviceUtils.Drawing(convertImage, response.FaceDetails);
 
-            return new FindFacesResponse(imageBase64);
+            return new FindFacesResponse(fileName);
         }
     }
 
