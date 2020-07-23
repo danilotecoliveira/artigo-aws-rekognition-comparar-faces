@@ -17,9 +17,7 @@ namespace AwsRekognitionProject.Api.Services
         {
             _httpContextAccessor = httpContextAccessor;
         }
-
-
-
+        
         public MemoryStream ConvertImageToMemoryStream(string imageBase64)
         {
             var bytes = Convert.FromBase64String(imageBase64);
