@@ -2,6 +2,7 @@ using Amazon.Rekognition;
 using System.Threading.Tasks;
 using Amazon.Rekognition.Model;
 using System.Collections.Generic;
+using AwsRekognitionProject.Api.Domain;
 using AwsRekognitionProject.Api.Entities;
 
 namespace AwsRekognitionProject.Api.Services
@@ -35,10 +36,5 @@ namespace AwsRekognitionProject.Api.Services
 
             return new FindFacesResponse(fileName);
         }
-    }
-
-    public interface IServiceDetectFaces
-    {
-        Task<FindFacesResponse> DetectFacesAsync(string sourceImage);
     }
 }

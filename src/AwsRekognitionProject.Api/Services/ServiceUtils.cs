@@ -5,6 +5,7 @@ using System.Drawing.Imaging;
 using Microsoft.AspNetCore.Http;
 using System.Collections.Generic;
 using aws = Amazon.Rekognition.Model;
+using AwsRekognitionProject.Api.Domain;
 
 namespace AwsRekognitionProject.Api.Services
 {
@@ -89,12 +90,5 @@ namespace AwsRekognitionProject.Api.Services
             
             return urlImage;
         }
-    }
-
-    public interface IServiceUtils
-    {
-        MemoryStream ConvertImageToMemoryStream(string imageBase64);
-        string Drawing(MemoryStream imageSource, aws.ComparedSourceImageFace faceMatch);
-        string Drawing(MemoryStream imageSource, List<aws.FaceDetail> faceDetails);
     }
 }

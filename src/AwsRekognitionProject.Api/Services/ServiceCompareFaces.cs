@@ -2,6 +2,7 @@ using System.Linq;
 using Amazon.Rekognition;
 using System.Threading.Tasks;
 using Amazon.Rekognition.Model;
+using AwsRekognitionProject.Api.Domain;
 using AwsRekognitionProject.Api.Entities;
 
 namespace AwsRekognitionProject.Api.Services
@@ -46,10 +47,5 @@ namespace AwsRekognitionProject.Api.Services
 
             return new FaceMatchResponse(hasMatch, similarity, fileName);
         }
-    }
-
-    public interface IServiceCompareFaces 
-    {
-        Task<FaceMatchResponse> CompareFacesAsync(string sourceImage, string targetImage);
     }
 }
