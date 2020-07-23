@@ -1,5 +1,7 @@
 using Amazon.Rekognition;
 using System.Threading.Tasks;
+using Amazon.Rekognition.Model;
+using System.Collections.Generic;
 using AwsRekognitionFaceCompare.Api.Entities;
 
 namespace AwsRekognitionFaceCompare.Api.Services
@@ -15,7 +17,14 @@ namespace AwsRekognitionFaceCompare.Api.Services
 
         public async Task<FindFacesResponse> DetectFacesAsync(string sourceImage)
         {
-            return null;
+            var imageSource = new Image();
+            imageSource.Bytes = ConvertImageToMemoryStream(sourceImage);
+
+            DetectFacesRequest request = new DetectFacesRequest
+            {
+                Attributes = new List<string>{ "DEFAULT" },
+                Image = imageSource
+            }
         }
     }
 
