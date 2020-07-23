@@ -19,6 +19,8 @@ namespace AwsRekognitionFaceCompare.Api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            services.AddTransient<IServiceUtils, ServiceUtils>();
+            services.AddTransient<IServiceDetectFaces, ServiceDetectFaces>();
             services.AddTransient<IServiceCompareFaces, ServiceCompareFaces>();
         }
 
