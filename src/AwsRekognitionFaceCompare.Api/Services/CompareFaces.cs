@@ -1,82 +1,81 @@
 using System;
 using System.IO;
 using System.Linq;
-using System.Drawing;
 using Amazon.Rekognition;
+using sd = System.Drawing;
+using System.Threading.Tasks;
 using Amazon.Rekognition.Model;
-using System.Collections.Generic;
-using Microsoft.Extensions.Logging;
 using AwsRekognitionFaceCompare.Api.Entities;
 
 namespace AwsRekognitionFaceCompare.Api.Services
 {
     public class CompareFaces : ICompareFaces
     {
-        private readonly ILogger<CompareFaces> _logger;
         private readonly AmazonRekognitionClient _rekognitionClient;
 
-        public CompareFaces(ILogger<CompareFaces> logger)
+        public CompareFaces()
         {
-            _logger = logger;
             _rekognitionClient = new AmazonRekognitionClient();
         }
 
-        public IEnumerable<FaceMatchResponse> GetFaceMatches(string sourceImage, string targetImage)
+        public async Task<FaceMatchResponse> CompareFacesAsync(string sourceImage, string targetImage)
         {
-            var similarityThreshold = 90f;
-
             var imageSource = new Amazon.Rekognition.Model.Image();
             imageSource.Bytes = ConvertImageToMemoryStream(sourceImage);
 
             var imageTarget = new Amazon.Rekognition.Model.Image();
             imageTarget.Bytes = ConvertImageToMemoryStream(targetImage);
 
-            var compareFacesRequest = new CompareFacesRequest
+            var request = new CompareFacesRequest
             {
                 SourceImage = imageSource,
                 TargetImage = imageTarget,
-                SimilarityThreshold = similarityThreshold
+                SimilarityThreshold = 80f
             };
 
-            var compareFacesResponse = _rekognitionClient.CompareFacesAsync(compareFacesRequest).Result;
-            var listFaces = new List<FaceMatchResponse>();
+            var response = await _rekognitionClient.CompareFacesAsync(request);
+            var hasMatch = response.FaceMatches.Any();
 
-            foreach (var match in compareFacesResponse.FaceMatches)
+            if (!hasMatch)
             {
-                var face = match.Face;
-                var position = compareFacesResponse.SourceImageFace.BoundingBox;
-
-                listFaces.Add(
-                    new FaceMatchResponse
-                    {
-                        PositionLeft = position.Left,
-                        PositionHeight = position.Height,
-                        PositionTop = position.Top,
-                        PositionWidth = position.Width,
-                        Similarity = match.Similarity
-                    }
-                );
+                return new FaceMatchResponse(hasMatch);
             }
 
-            Drawing(ConvertImageToMemoryStream(sourceImage), listFaces);
+            var convertImage = ConvertImageToMemoryStream(sourceImage);
+            var drawnImage = Drawing(convertImage, response.SourceImageFace);
+            var imageBase64 = ConvertImageToBase64(drawnImage);
+            
+            var similarity = response.FaceMatches.FirstOrDefault().Similarity;
 
-            return listFaces;
+            return new FaceMatchResponse(hasMatch, similarity, imageBase64);            
         }
 
-        public void Drawing(MemoryStream imageSource, List<FaceMatchResponse> listFaces)
+        private sd.Image Drawing(MemoryStream imageSource, ComparedSourceImageFace faceMatch)
         {
-            var image = System.Drawing.Image.FromStream(imageSource);
-            Graphics graph = Graphics.FromImage(image);
-            Pen pen = new Pen(Brushes.Red);
-            var face = listFaces.FirstOrDefault();
+            var image = sd.Image.FromStream(imageSource);
+            var graphic = sd.Graphics.FromImage(image);
+            var pen = new sd.Pen(sd.Brushes.Red, 3f);
 
-            var left = face.PositionLeft * image.Width;
-            var top = face.PositionTop * image.Height;
-            var width = face.PositionWidth * image.Width;
-            var height = face.PositionHeight * image.Height;
+            var left = faceMatch.BoundingBox.Left * image.Width;
+            var top = faceMatch.BoundingBox.Top * image.Height;
+            var width = faceMatch.BoundingBox.Width * image.Width;
+            var height = faceMatch.BoundingBox.Height * image.Height;
 
-            graph.DrawRectangle(pen, left, top, width, height);    
-            image.Save("myImage.jpg", System.Drawing.Imaging.ImageFormat.Jpeg);
+            graphic.DrawRectangle(pen, left, top, width, height);    
+
+            return image;
+        }
+
+        private string ConvertImageToBase64(sd.Image image)
+        {
+            using (var memory = new MemoryStream())
+            {
+                image.Save(memory, image.RawFormat);
+                var imageBytes = memory.ToArray();
+                var base64String = Convert.ToBase64String(imageBytes);
+                
+                return base64String;
+            }
         }
 
         private MemoryStream ConvertImageToMemoryStream(string imageBase64)
@@ -88,6 +87,6 @@ namespace AwsRekognitionFaceCompare.Api.Services
 
     public interface ICompareFaces 
     {
-        IEnumerable<FaceMatchResponse> GetFaceMatches(string sourceImage, string targetImage);
+        Task<FaceMatchResponse> CompareFacesAsync(string sourceImage, string targetImage);
     }
 }

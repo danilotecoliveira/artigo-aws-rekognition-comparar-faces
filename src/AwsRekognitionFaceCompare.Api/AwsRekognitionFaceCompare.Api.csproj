@@ -6,7 +6,6 @@
 
   <ItemGroup>
     <PackageReference Include="AWSSDK.Rekognition" Version="3.3.106.13" />
-    <!-- <PackageReference Include="CoreCompat.System.Drawing" Version="1.0.0-beta006" /> -->
     <PackageReference Include="System.Drawing.Common" Version="4.7.0" />
   </ItemGroup>
 

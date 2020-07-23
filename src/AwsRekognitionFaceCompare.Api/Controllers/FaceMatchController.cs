@@ -1,5 +1,6 @@
 using System;
 using System.Net;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using AwsRekognitionFaceCompare.Api.Services;
 using AwsRekognitionFaceCompare.Api.Entities;
@@ -18,16 +19,20 @@ namespace AwsRekognitionFaceCompare.Api.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetFaceMatches([FromBody] FaceMatchRequest faceMatchRequest)
+        public async Task<IActionResult> GetFaceMatches([FromBody] FaceMatchRequest faceMatchRequest)
         {
             try
             {
-                var result = _compareFaces.GetFaceMatches(
+                var result = await _compareFaces.CompareFacesAsync(
                     faceMatchRequest.SourceImage, 
                     faceMatchRequest.TargetImage
                 );
 
                 return StatusCode(HttpStatusCode.OK.GetHashCode(), result);
+            }
+            catch (ArgumentException ex)
+            {
+                return StatusCode(HttpStatusCode.BadRequest.GetHashCode(), ex.Message);
             }
             catch (Exception ex)
             {
