@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 
-namespace AwsRekognitionFaceCompare.Api
+namespace AwsRekognitionProject.Api
 {
     public class Program
     {

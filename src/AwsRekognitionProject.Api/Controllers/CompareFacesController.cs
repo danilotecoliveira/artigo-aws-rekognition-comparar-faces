@@ -2,10 +2,10 @@ using System;
 using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using AwsRekognitionFaceCompare.Api.Services;
-using AwsRekognitionFaceCompare.Api.Entities;
+using AwsRekognitionProject.Api.Services;
+using AwsRekognitionProject.Api.Entities;
 
-namespace AwsRekognitionFaceCompare.Api.Controllers
+namespace AwsRekognitionProject.Api.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]

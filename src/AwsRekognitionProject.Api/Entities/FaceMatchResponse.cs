@@ -1,4 +1,4 @@
-namespace AwsRekognitionFaceCompare.Api.Entities
+namespace AwsRekognitionProject.Api.Entities
 {
     public class FaceMatchResponse
     {

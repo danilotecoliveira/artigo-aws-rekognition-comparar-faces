@@ -1,14 +1,14 @@
+using System.IO;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Configuration;
-using AwsRekognitionFaceCompare.Api.Services;
+using AwsRekognitionProject.Api.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
-using System.IO;
 
-namespace AwsRekognitionFaceCompare.Api
+namespace AwsRekognitionProject.Api
 {
     public class Startup
     {

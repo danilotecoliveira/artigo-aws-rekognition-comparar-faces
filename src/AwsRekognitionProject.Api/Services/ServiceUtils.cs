@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Http;
 using System.Collections.Generic;
 using aws = Amazon.Rekognition.Model;
 
-namespace AwsRekognitionFaceCompare.Api.Services
+namespace AwsRekognitionProject.Api.Services
 {
     public class ServiceUtils : IServiceUtils
     {

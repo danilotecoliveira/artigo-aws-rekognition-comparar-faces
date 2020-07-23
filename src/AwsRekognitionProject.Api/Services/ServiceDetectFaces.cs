@@ -2,9 +2,9 @@ using Amazon.Rekognition;
 using System.Threading.Tasks;
 using Amazon.Rekognition.Model;
 using System.Collections.Generic;
-using AwsRekognitionFaceCompare.Api.Entities;
+using AwsRekognitionProject.Api.Entities;
 
-namespace AwsRekognitionFaceCompare.Api.Services
+namespace AwsRekognitionProject.Api.Services
 {
     public class ServiceDetectFaces : IServiceDetectFaces
     {

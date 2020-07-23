@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26124.0
 MinimumVisualStudioVersion = 15.0.26124.0
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AwsRekognitionFaceCompare.Api", "AwsRekognitionFaceCompare.Api\AwsRekognitionFaceCompare.Api.csproj", "{7213950F-9A3E-4FD5-AD65-080723668ECF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AwsRekognitionProject.Api", "AwsRekognitionProject.Api\AwsRekognitionProject.Api.csproj", "{7213950F-9A3E-4FD5-AD65-080723668ECF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
