@@ -1,8 +1,8 @@
 using System;
 using System.IO;
 using System.Drawing;
-using aws = Amazon.Rekognition.Model;
 using System.Collections.Generic;
+using aws = Amazon.Rekognition.Model;
 
 namespace AwsRekognitionFaceCompare.Api.Services
 {
@@ -64,15 +64,16 @@ namespace AwsRekognitionFaceCompare.Api.Services
         {
             var image = Image.FromStream(imageSource);
             var graphic = Graphics.FromImage(image);
-            var pen = new Pen(Brushes.Red, 3f);
+            var pen = new Pen(Brushes.Red, 5f);
 
             boxes.ForEach(b => {
-                var left = b.Left * image.Width;
-                var top = b.Top * image.Height;
-                var width = b.Width * image.Width;
-                var height = b.Height * image.Height;
-
-                graphic.DrawRectangle(pen, b.Left, b.Top, b.Width, b.Height);
+                graphic.DrawRectangle(
+                    pen, 
+                    b.Left * image.Width, 
+                    b.Top * image.Height, 
+                    b.Width * image.Width, 
+                    b.Height * image.Height
+                );
             });
 
             return image;

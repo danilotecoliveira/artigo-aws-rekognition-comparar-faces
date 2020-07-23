@@ -2,7 +2,7 @@ namespace AwsRekognitionFaceCompare.Api.Entities
 {
     public class FaceMatchResponse
     {
-        public FaceMatchResponse(bool match, float? similarity = null, string drawnImageBase64 = "")
+        public FaceMatchResponse(bool match, float? similarity, string drawnImageBase64)
         {
             Match = match;
             Similarity = similarity;

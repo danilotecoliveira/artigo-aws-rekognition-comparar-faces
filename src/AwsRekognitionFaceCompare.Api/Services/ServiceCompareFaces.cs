@@ -37,16 +37,15 @@ namespace AwsRekognitionFaceCompare.Api.Services
 
             if (!hasMatch)
             {
-                return new FaceMatchResponse(hasMatch);
+                return new FaceMatchResponse(hasMatch, null, string.Empty);
             }
 
             var convertImage = _serviceUtils.ConvertImageToMemoryStream(sourceImage);
             var drawnImage = _serviceUtils.Drawing(convertImage, response.SourceImageFace);
-            var imageBase64 = _serviceUtils.ConvertImageToBase64(drawnImage);
-            
+            var imageBase64 = _serviceUtils.ConvertImageToBase64(drawnImage);            
             var similarity = response.FaceMatches.FirstOrDefault().Similarity;
 
-            return new FaceMatchResponse(hasMatch, similarity, imageBase64);            
+            return new FaceMatchResponse(hasMatch, similarity, imageBase64);
         }
     }
 
