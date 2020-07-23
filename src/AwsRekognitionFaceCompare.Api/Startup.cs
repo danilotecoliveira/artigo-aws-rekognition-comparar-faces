@@ -19,7 +19,7 @@ namespace AwsRekognitionFaceCompare.Api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
-            services.AddTransient<ICompareFaces, CompareFaces>();
+            services.AddTransient<IServiceCompareFaces, ServiceCompareFaces>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

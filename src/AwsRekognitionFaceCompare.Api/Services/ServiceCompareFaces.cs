@@ -9,11 +9,11 @@ using AwsRekognitionFaceCompare.Api.Entities;
 
 namespace AwsRekognitionFaceCompare.Api.Services
 {
-    public class CompareFaces : ICompareFaces
+    public class ServiceCompareFaces : IServiceCompareFaces
     {
         private readonly AmazonRekognitionClient _rekognitionClient;
 
-        public CompareFaces()
+        public ServiceCompareFaces()
         {
             _rekognitionClient = new AmazonRekognitionClient();
         }
@@ -85,7 +85,7 @@ namespace AwsRekognitionFaceCompare.Api.Services
         }
     }
 
-    public interface ICompareFaces 
+    public interface IServiceCompareFaces 
     {
         Task<FaceMatchResponse> CompareFacesAsync(string sourceImage, string targetImage);
     }

@@ -9,13 +9,13 @@ namespace AwsRekognitionFaceCompare.Api.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class FaceMatchController : ControllerBase
+    public class CompareFacesController : ControllerBase
     {
-        private readonly ICompareFaces _compareFaces;
+        private readonly IServiceCompareFaces _serviceCompareFaces;
 
-        public FaceMatchController(ICompareFaces compareFaces)
+        public CompareFacesController(IServiceCompareFaces serviceCompareFaces)
         {
-            _compareFaces = compareFaces;
+            _serviceCompareFaces = serviceCompareFaces;
         }
 
         [HttpGet]
@@ -23,16 +23,12 @@ namespace AwsRekognitionFaceCompare.Api.Controllers
         {
             try
             {
-                var result = await _compareFaces.CompareFacesAsync(
+                var result = await _serviceCompareFaces.CompareFacesAsync(
                     faceMatchRequest.SourceImage, 
                     faceMatchRequest.TargetImage
                 );
 
                 return StatusCode(HttpStatusCode.OK.GetHashCode(), result);
-            }
-            catch (ArgumentException ex)
-            {
-                return StatusCode(HttpStatusCode.BadRequest.GetHashCode(), ex.Message);
             }
             catch (Exception ex)
             {
