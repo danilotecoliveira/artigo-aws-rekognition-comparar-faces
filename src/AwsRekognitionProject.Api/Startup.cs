@@ -22,12 +22,17 @@ namespace AwsRekognitionProject.Api
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddControllers();
+            
+            // Habilita a API a exibir arquivos em diretórios pelo navegador
             services.AddDirectoryBrowser();
 
-            services.AddControllers();
+            // Injeção de dependência das classes e interfaces
             services.AddTransient<IServiceUtils, ServiceUtils>();
             services.AddTransient<IServiceDetectFaces, ServiceDetectFaces>();
             services.AddTransient<IServiceCompareFaces, ServiceCompareFaces>();
+
+            // Singleton da classe que utilizamos para criar a URL
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
         }
 
@@ -38,13 +43,15 @@ namespace AwsRekognitionProject.Api
                 app.UseDeveloperExceptionPage();
             }
 
+            // Configura o diretório Images para fornecer arquivos estáticos
             app.UseStaticFiles(new StaticFileOptions
             {
                 FileProvider = new PhysicalFileProvider(
                     Path.Combine(Directory.GetCurrentDirectory(), "Images")),
                 RequestPath = "/images"
             });
-            
+
+            // Configura o diretório Images para exibir as imagens pelo navegador
             app.UseDirectoryBrowser(new DirectoryBrowserOptions
             {
                 FileProvider = new PhysicalFileProvider(
